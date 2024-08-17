@@ -16,7 +16,7 @@ namespace Application.Services
 
         public async Task CreateOwnerAsync(CreateOwnerRequest request)
         {
-            var owner = new Owner() { OwnerId=request.OwnerId, OwnerName=request.OwnerName};
+            var owner = new Owner() { OwnerId = request.OwnerId, OwnerName = request.OwnerName };
             await _ownerRepository.AddAsync(owner);
         }
 
@@ -25,7 +25,7 @@ namespace Application.Services
             var owner = _ownerRepository.GetByIdAsync(ownerId);
             if (owner != null)
             {
-                await _ownerRepository.DeleteAsync(ownerId);  
+                await _ownerRepository.DeleteAsync(ownerId);
             }
         }
 
@@ -34,7 +34,7 @@ namespace Application.Services
             return await _ownerRepository.GetAllAsync();
         }
 
-        public async Task<Owner> GetById(int ownerId)
+        public async Task<Owner?> GetById(int ownerId)
         {
             var owner = await _ownerRepository.GetByIdAsync(ownerId);
             if (owner != null)
@@ -44,14 +44,21 @@ namespace Application.Services
             return null;
         }
 
-        public Task<Owner> GetOwnerDetailsByIdAsync(int ownerId)
+        async Task<bool> IOwnerService.UpdateOwnerAsync(UpdateOwnerRequest request)
         {
-            throw new NotImplementedException();
-        }
+            var owner = await _ownerRepository.GetByIdAsync(request.OwnerId);
+            if (owner == null)
+            {
+                throw new KeyNotFoundException("Owner not found");
+            }
+            if (!string.IsNullOrEmpty(request.OwnerName))
+            {
+                owner.OwnerName = request.OwnerName;
 
-        public Task UpdateOwnerAsync(UpdateOwnerRequest request)
-        {
-            throw new NotImplementedException();
+                await _ownerRepository.UpdateAsync(owner);
+               
+            }
+            return true; //update was successful
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Domain.Abstractions;
 using Domain.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Repositories
 {
@@ -13,20 +14,26 @@ namespace Infrastructure.Repositories
         }
         public async Task AddReservationAsync(Reservation reservation)
         {
-          await _context.Reservations.AddAsync(reservation);
-          await _context.SaveChangesAsync();
+            await _context.Reservations.AddAsync(reservation);
+            await _context.SaveChangesAsync();
         }
-
-        public Task DeleteAsync(Reservation res)
+        public async Task DeleteAsync(int resId)
         {
-            throw new NotImplementedException();
+            var res = await _context.Reservations.FindAsync(resId);
+            if (res != null)
+            {
+                _context.Reservations.Remove(res);
+                await _context.SaveChangesAsync();
+            }
         }
-
-        public async Task<Reservation> GetReservationByIdAsync(int id)
+        public async Task<IEnumerable<Reservation>> GetAsync()
+        {
+            return await _context.Reservations.ToListAsync();
+        }
+        public async Task<Reservation?> GetReservationByIdAsync(int id)
         {
             return await _context.Reservations.FindAsync(id);
         }
-
         public Task<IEnumerable<Reservation>> GetReservationsforUserId(int userId)
         {
             throw new NotImplementedException();

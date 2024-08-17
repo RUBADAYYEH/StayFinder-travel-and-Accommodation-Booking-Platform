@@ -1,6 +1,7 @@
 ﻿using Application.Abstraction;
 using Application.Dtos;
 using Domain.Entities;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Presentation.Controllers
@@ -8,15 +9,15 @@ namespace Presentation.Controllers
     [Route("rooms")]
     public class RoomController : ControllerBase
     {
-        IRoomService _roomService;
-        IHotelService _hotelervice;
-        public RoomController(IRoomService roomService,IHotelService hotelService)
+        private readonly IRoomService _roomService;
+        private readonly IHotelService _hotelervice;
+        public RoomController(IRoomService roomService, IHotelService hotelService)
         {
             _roomService = roomService;
             _hotelervice = hotelService;
         }
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Room>>> GetRooms()
+        public  ActionResult<IEnumerable<Room>> GetRooms()
         {
             var rooms = _roomService.GetAllAsync();
             return Ok(rooms);
@@ -31,49 +32,37 @@ namespace Presentation.Controllers
             }
             return NotFound();
         }
-        /*  [HttpPost]
-          public async Task<IActionResult> CreateRoom([FromBody] CreateRoomRequest room)
-          {
-              if (!ModelState.IsValid)
-              {
-                  var errors = ModelState.Values
-           .SelectMany(v => v.Errors)
-           .Select(e => e.ErrorMessage)
-           .ToList();
-
-                  return BadRequest(new { errors });
-              }
-              await _roomService.CreateRoomAsync(room);
-
-              return CreatedAtAction(nameof(GetRooms), new { id = room.RoomId }, room);
-          }*/
+        [HttpPatch("{id:int}")]
+        public async Task<IActionResult> PatchRoom(int id, [FromBody] UpdateRoomRequest updateRequest)
+        {
+            updateRequest.RoomId = id;
+            var result = await _roomService.UpdateRoomAsync(updateRequest);
+            if (!result)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while updating the room.");
+            }
+            return NoContent();
+        }
         [HttpDelete("{roomid}")]
-        public async Task<ActionResult> DeleteRoom(int hotelid,int roomid)
+        public async Task<ActionResult> DeleteRoom(int hotelid, int roomid)
         {
             var room = _roomService.GetById(roomid);
             if (room == null)
             {
                 return NotFound("Room Not Found");
             }
-           
             await _roomService.DeleteRoomAsync(roomid);
             return NoContent();
-
         }
         [HttpPost("search")]
-        public async Task<ActionResult<IQueryable<Room>>> SearchRooms([FromBody] SearchRoomRequest searchRequest)
+        public ActionResult<IQueryable<Room>> SearchRooms([FromBody] SearchRoomRequest searchRequest)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-
-           
-                var results = await _roomService.SearchRoomsAsync(searchRequest);
-                return Ok(results);
-            
-       
+            var results = _roomService.SearchRoomsAsync(searchRequest);
+            return Ok(results);
         }
-     
     }
 }

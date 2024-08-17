@@ -1,11 +1,8 @@
-﻿using Domain.Entities;
-
-namespace Application.Dtos
+﻿namespace Application.Dtos
 {
     public class UpdateHotelRequest
     {
         public int HotelId { get; set; }
-        public int OwnerId { get; set; }
         public string HotelName { get; set; } = string.Empty;
         public string HotelDescription { get; set; } = string.Empty;
         public int RoomCount { get; set; } = 0;

@@ -3,16 +3,14 @@ using Application.Dtos;
 using Domain.Abstractions;
 using Domain.Entities;
 
-
 public class RoomService : IRoomService
 {
-	private readonly IRoomRepository _roomRepository;
-	public RoomService(IRoomRepository roomRepository)
-	{
-        _roomRepository=roomRepository;
+    private readonly IRoomRepository _roomRepository;
+    public RoomService(IRoomRepository roomRepository)
+    {
+        _roomRepository = roomRepository;
 
     }
-
     public async Task CreateRoomAsync(CreateRoomRequest request)
     {
         if (await _roomRepository.GetByIdAsync(request.RoomId) != null)
@@ -31,8 +29,7 @@ public class RoomService : IRoomService
             Description = request.Description,
             ThumbnailUrl = request.ThumbnailUrl
         };
-         await _roomRepository.AddAsync(room);
-
+        await _roomRepository.AddAsync(room);
     }
 
     public async Task DeleteRoomAsync(int roomId)
@@ -42,19 +39,17 @@ public class RoomService : IRoomService
         {
             throw new KeyNotFoundException("Room not found");
         }
-        await _roomRepository.DeleteAsync(room.Result.RoomId);
+        await _roomRepository.DeleteAsync(room.Result!.RoomId);
     }
-
     public IQueryable<Room> GetAllAsync()
     {
-       return  _roomRepository.GetAllAsync();
+        return _roomRepository.GetAllAsync();
     }
 
-   
-    public async Task<Room> GetById(int roomId)
+    public async Task<Room?> GetById(int roomId)
     {
         var room = await _roomRepository.GetByIdAsync(roomId);
-        if ( room != null)
+        if (room != null)
         {
             return room;
         }
@@ -68,22 +63,16 @@ public class RoomService : IRoomService
         {
             throw new KeyNotFoundException("Room not found");
         }
-        return room; ;
+        return room!; 
     }
 
-
-    public  async Task<IEnumerable<Room>> SearchRoomsAsync(SearchRoomRequest request)
+    public IEnumerable<Room> SearchRoomsAsync(SearchRoomRequest request)
     {
-        // Start with the base query
-        var query =  _roomRepository.GetAllAsync(); // Assuming this returns IQueryable<Room>
-
-        // Apply filtering based on RoomType if specified
+        var query = _roomRepository.GetAllAsync();
         if (request.RoomType.HasValue)
         {
-            query =  query.Where(r => r.RoomType == request.RoomType.Value);
+            query = query.Where(r => r.RoomType == request.RoomType.Value);
         }
-
-        // Apply filtering based on CheckInDate and CheckOutDate if specified
         if (request.CheckInDate.HasValue && request.CheckOutDate.HasValue)
         {
             var checkInDate = request.CheckInDate.Value;
@@ -93,52 +82,51 @@ public class RoomService : IRoomService
                 r.Reservations == null || !r.Reservations.Any(reservation =>
                     reservation.CheckInDate < checkOutDate && reservation.CheckOutDate > checkInDate));
         }
-
-        // Apply filtering based on NumberOfChildren if specified
         if (request.NumberOfChildren.HasValue)
         {
             query = query.Where(r => r.NumberOfChildren >= request.NumberOfChildren.Value);
         }
-
-        // Apply filtering based on NumberOfAdults if specified
         if (request.NumberOfAdults.HasValue)
         {
             query = query.Where(r => r.NumberOfAdults >= request.NumberOfAdults.Value);
         }
-
-        // Apply filtering based on MinPricePerNight if specified
         if (request.MinPricePerNight.HasValue)
         {
             query = query.Where(r => r.PricePerNight >= request.MinPricePerNight.Value);
         }
-
-        // Apply filtering based on MaxPricePerNight if specified
         if (request.MaxPricePerNight.HasValue)
         {
             query = query.Where(r => r.PricePerNight <= request.MaxPricePerNight.Value);
         }
 
-        // Execute the query and get the results
-        var rooms =  query.ToList();
-
-        // Check if the result set meets the required number of rooms
-        if (rooms.Count() >= request.NumberOfRooms)
+        if (query.Count() >= request.NumberOfRooms)
         {
-            return rooms;
+            return query;
         }
-
         return new List<Room>();
     }
-
-
-    public async Task UpdateRoomAsync(UpdateRoomRequest request)
+    async Task<bool> IRoomService.UpdateRoomAsync(UpdateRoomRequest request)
     {
-        var room = _roomRepository.GetByIdAsync(request.RoomId);
+        var room = await _roomRepository.GetByIdAsync(request.RoomId);
         if (room == null)
         {
             throw new KeyNotFoundException("Room not found");
         }
-        await _roomRepository.UpdateAsync(room.Result);
+        if (request.RoomType.HasValue)
+            room.RoomType = request.RoomType.Value;
+        if (request.NumberOfAdults.HasValue)
+            room.NumberOfAdults = request.NumberOfAdults.Value;
+        if (request.NumberOfChildren.HasValue)
+            room.NumberOfChildren = request.NumberOfChildren.Value;
+        if (request.IsPetFriendly.HasValue)
+            room.IsPetFriendly = request.IsPetFriendly.Value;
+        if (request.PricePerNight.HasValue)
+            room.PricePerNight = request.PricePerNight.Value;
+        if (!string.IsNullOrEmpty(request.Description))
+            room.Description = request.Description;
+        if (!string.IsNullOrEmpty(request.ThumbnailUrl))
+            room.ThumbnailUrl = request.ThumbnailUrl;
+        await _roomRepository.UpdateAsync(room);
+        return true;
     }
-
 }

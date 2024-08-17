@@ -1,6 +1,5 @@
 ﻿using Application.Abstraction;
 using Application.Dtos;
-using Domain.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Presentation.Controllers
@@ -14,6 +13,7 @@ namespace Presentation.Controllers
         {
             _reservationService = reservationService;
         }
+      
         [HttpGet("{reservationid}")]
         public async Task<IActionResult> Get(int reservationid)
         {

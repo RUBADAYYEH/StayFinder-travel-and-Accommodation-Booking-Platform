@@ -4,7 +4,6 @@ namespace Application.Dtos
 {
     public class SearchRoomRequest
     {
-        
         public RoomType? RoomType { get; set; }
         [Required]
         public DateTime? CheckInDate { get; set; }

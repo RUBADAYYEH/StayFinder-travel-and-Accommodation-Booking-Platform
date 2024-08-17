@@ -1,6 +1,7 @@
 ﻿using Application.Abstraction;
 using Application.Dtos;
 using Domain.Entities;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 
@@ -20,7 +21,7 @@ namespace Presentation.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Hotel>>> GetHotels()
         {
-            var hotels = _hotelService.GetAllAsync().Result;
+            var hotels = await _hotelService.GetAllAsync();
             return Ok(hotels);
         }
         [HttpGet("{hotelid}")]
@@ -52,7 +53,7 @@ namespace Presentation.Controllers
             {
                 return NotFound("Hotel Not Found");
             }
-            
+
             await _hotelService.DeleteHotelAsync(hotelid);
             return NoContent();
         }
@@ -65,12 +66,12 @@ namespace Presentation.Controllers
             }
             var rooms = await _hotelService.GetRoomsForHotelId(hotelid);
             return Ok(rooms);
-          
+
         }
         [HttpPost("{hotelid}/rooms")]
-        public async Task<IActionResult> CreateRoom(int hotelid,[FromBody] CreateRoomRequest room)
+        public async Task<IActionResult> CreateRoom(int hotelid, [FromBody] CreateRoomRequest room)
         {
-            if (await _hotelService.GetById(hotelid) == null) 
+            if (await _hotelService.GetById(hotelid) == null)
             {
                 return NotFound("Hotel Not Found");
             }
@@ -87,6 +88,16 @@ namespace Presentation.Controllers
 
             return NoContent();
         }
-
+        [HttpPatch("{id:int}")]
+        public async Task<IActionResult> PatchHotel(int id, [FromBody] UpdateHotelRequest updateRequest)
+        {
+            updateRequest.HotelId = id;
+            var result = await _hotelService.UpdateHotelAsync(updateRequest);
+            if (!result)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while updating the hotel.");
+            }
+            return NoContent();
         }
+    }
 }

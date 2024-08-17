@@ -1,5 +1,4 @@
 ﻿using Domain.Entities.Enums;
-using Domain.Entities;
 using System.ComponentModel.DataAnnotations;
 
 namespace Application.Dtos
@@ -12,8 +11,10 @@ namespace Application.Dtos
         [Required]
         public RoomType RoomType { get; set; }
         [Required]
+        [Range(0, 4)]
         public int NumberOfAdults { get; set; }
         [Required]
+        [Range(0, 4)]
         public int NumberOfChildren { get; set; }
         public bool IsPetFriendly { get; set; }
         [Required]

@@ -1,12 +1,10 @@
-﻿using Domain.Entities;
-using System.ComponentModel.DataAnnotations;
-using System.Runtime.CompilerServices;
-
+﻿using System.ComponentModel.DataAnnotations;
 namespace Application.Dtos
 {
     public class CreateHotelRequest
     {
         public int HotelId { get; set; }
+        [Required]
         public int OwnerId { get; set; }
         [Required]
         public string HotelName { get; set; } = string.Empty;

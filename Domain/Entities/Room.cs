@@ -15,6 +15,6 @@ namespace Domain.Entities
         public string? Description { get; set; }
         public string? ThumbnailUrl { get; set; }
         public List<Reservation>? Reservations { get; set; }
-       
+
     }
 }

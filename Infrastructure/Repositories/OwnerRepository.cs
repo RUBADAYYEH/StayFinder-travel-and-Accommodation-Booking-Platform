@@ -17,7 +17,6 @@ namespace Infrastructure.Repositories
             await _context.Owners.AddAsync(owner);
             await _context.SaveChangesAsync();
         }
-
         public async Task DeleteAsync(int ownerId)
         {
             var owner = await _context.Owners.FindAsync(ownerId);
@@ -27,20 +26,18 @@ namespace Infrastructure.Repositories
                 await _context.SaveChangesAsync();
             }
         }
-
         public async Task<IEnumerable<Owner>> GetAllAsync()
         {
             return await _context.Owners.ToListAsync();
         }
-
-        public async Task<Owner> GetByIdAsync(int ownerId)
+        public async Task<Owner?> GetByIdAsync(int ownerId)
         {
             return await _context.Owners.FindAsync(ownerId);
         }
-
-        public Task UpdateAsync(Hotel hotel)
+        public async Task UpdateAsync(Owner owner)
         {
-            throw new NotImplementedException();
+            _context.Owners.Update(owner);
+            await _context.SaveChangesAsync();
         }
     }
 }

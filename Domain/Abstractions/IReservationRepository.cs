@@ -4,10 +4,10 @@ namespace Domain.Abstractions
 {
     public interface IReservationRepository
     {
-        Task<Reservation> GetReservationByIdAsync(int id);
+        Task<IEnumerable<Reservation>> GetAsync();
+        Task<Reservation?> GetReservationByIdAsync(int id);
         Task AddReservationAsync(Reservation reservation);
-        Task DeleteAsync(Reservation res);
+        Task DeleteAsync(int resId);
         Task<IEnumerable<Reservation>> GetReservationsforUserId(int userId);
-      
     }
 }
