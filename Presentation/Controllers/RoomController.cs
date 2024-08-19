@@ -44,7 +44,7 @@ namespace Presentation.Controllers
             return NoContent();
         }
         [HttpDelete("{roomid}")]
-        public async Task<ActionResult> DeleteRoom(int hotelid, int roomid)
+        public async Task<ActionResult> DeleteRoom( int roomid)
         {
             var room = _roomService.GetById(roomid);
             if (room == null)

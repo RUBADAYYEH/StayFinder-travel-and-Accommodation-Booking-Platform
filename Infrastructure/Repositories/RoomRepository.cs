@@ -29,7 +29,9 @@ namespace Infrastructure.Repositories
         }
         public IQueryable<Room> GetAllAsync()
         {
-            return _context.Rooms.AsQueryable();
+            return _context.Rooms
+                   .Include(r => r.Reservations).Include(b => b.Hotel)
+                   .AsQueryable();
         }
         public async Task<Room?> GetByIdAsync(int roomId)
         {
