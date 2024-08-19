@@ -106,4 +106,10 @@ public class HotelService : IHotelService
         }
         return null;
     }
+
+    public async Task<IEnumerable<string>> GetCities()
+    {
+        var res = await _hotelRepository.GetCities();
+        return res;
+    }
 }
