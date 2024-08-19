@@ -7,7 +7,7 @@ namespace Application.Services
     public class WeatherService : IWeatherService
     {
         private readonly HttpClient _httpClient;
-        private const string ApiKey = "c4d859b78d654347b541a6c2985977c9";
+        private const string ApiKey = "";
         private readonly IHotelService _hotelService;
 
         public WeatherService(HttpClient httpClient, IHotelService hotelService)
