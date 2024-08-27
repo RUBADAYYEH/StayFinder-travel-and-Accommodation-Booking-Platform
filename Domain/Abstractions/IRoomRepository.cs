@@ -5,8 +5,8 @@ namespace Domain.Abstractions
     {
         Task AddAsync(Room room);
         Task UpdateAsync(Room room);
-        Task DeleteAsync(int roomId);
-        Task<Room?> GetByIdAsync(int roomId);
+        Task DeleteAsync(Guid roomId);
+        Task<Room?> GetByIdAsync(Guid roomId);
         IQueryable<Room> GetAllAsync();
     }
 }

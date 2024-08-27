@@ -3,7 +3,7 @@ namespace Application.Dtos
 {
     public class UpdateRoomRequest
     {
-        public int RoomId { get; set; }
+        public Guid RoomId { get; set; }
         public RoomType? RoomType { get; set; } 
         public int? NumberOfAdults { get; set; } 
         public int? NumberOfChildren { get; set; } 

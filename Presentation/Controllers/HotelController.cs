@@ -28,7 +28,7 @@ namespace Presentation.Controllers
             return Ok(hotels);
         }
         [HttpGet("{hotelid}")]
-        public async Task<ActionResult<Hotel>> GetHotelById(int hotelid)
+        public async Task<ActionResult<Hotel>> GetHotelById(Guid hotelid)
         {
             var hotel = await _hotelService.GetById(hotelid);
             if (hotel != null)
@@ -49,7 +49,7 @@ namespace Presentation.Controllers
             return CreatedAtAction(nameof(GetHotels), new { id = hotel.HotelId }, hotel);
         }
         [HttpDelete("{hotelid}")]
-        public async Task<ActionResult> DeleteHotel(int hotelid)
+        public async Task<ActionResult> DeleteHotel(Guid hotelid)
         {
             var hotel = _hotelService.GetById(hotelid);
             if (hotel == null)
@@ -61,7 +61,7 @@ namespace Presentation.Controllers
             return NoContent();
         }
         [HttpGet("{hotelid}/rooms")]
-        public async Task<ActionResult<IEnumerable<Room>>> GetAllrooms(int hotelid)
+        public async Task<ActionResult<IEnumerable<Room>>> GetAllrooms(Guid hotelid)
         {
             if (await _hotelService.GetById(hotelid) == null)
             {
@@ -72,7 +72,7 @@ namespace Presentation.Controllers
 
         }
         [HttpPost("{hotelid}/rooms")]
-        public async Task<IActionResult> CreateRoom(int hotelid, [FromBody] CreateRoomRequest room)
+        public async Task<IActionResult> CreateRoom(Guid hotelid, [FromBody] CreateRoomRequest room)
         {
             if (await _hotelService.GetById(hotelid) == null)
             {
@@ -92,7 +92,7 @@ namespace Presentation.Controllers
             return NoContent();
         }
         [HttpPatch("{id:int}")]
-        public async Task<IActionResult> PatchHotel(int id, [FromBody] UpdateHotelRequest updateRequest)
+        public async Task<IActionResult> PatchHotel(Guid id, [FromBody] UpdateHotelRequest updateRequest)
         {
             updateRequest.HotelId = id;
             var result = await _hotelService.UpdateHotelAsync(updateRequest);

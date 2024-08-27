@@ -31,7 +31,7 @@ namespace Presentation.Controllers
             return CreatedAtAction(nameof(GetOwners), new { id = owner.OwnerId }, owner);
         }
         [HttpPatch("{id:int}")]
-        public async Task<IActionResult> PatchOwner(int id, [FromBody] UpdateOwnerRequest updateRequest)
+        public async Task<IActionResult> PatchOwner(Guid id, [FromBody] UpdateOwnerRequest updateRequest)
         {
             try
             {
@@ -55,7 +55,7 @@ namespace Presentation.Controllers
             }
         }
         [HttpDelete("{ownerid}")]
-        public async Task<ActionResult> DeleteOwner(int ownerid)
+        public async Task<ActionResult> DeleteOwner(Guid ownerid)
         {
             var owner = _ownerService.GetById(ownerid);
             if (owner == null)

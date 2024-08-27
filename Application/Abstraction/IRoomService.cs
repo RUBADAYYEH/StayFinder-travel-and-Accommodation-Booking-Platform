@@ -6,9 +6,9 @@ namespace Application.Abstraction
     {
         Task CreateRoomAsync(CreateRoomRequest request);
         Task<bool> UpdateRoomAsync(UpdateRoomRequest request);
-        Task DeleteRoomAsync(int roomId);
-        Task<Room> GetRoomDetailsByIdAsync(int roomId);
-        Task<Room?> GetById(int roomId);
+        Task DeleteRoomAsync(Guid roomId);
+        Task<Room> GetRoomDetailsByIdAsync(Guid roomId);
+        Task<Room?> GetById(Guid roomId);
        IEnumerable<Room> SearchRoomsAsync(SearchRoomRequest request);
         IQueryable<Room> GetAllAsync();
     }

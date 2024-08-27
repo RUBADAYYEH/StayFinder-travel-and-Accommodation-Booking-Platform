@@ -5,9 +5,9 @@ namespace Application.Dtos
 {
     public class CreateRoomRequest
     {
-        public int RoomId { get; set; }
+        public Guid RoomId { get; set; }
         [Required]
-        public int HotelId { get; set; }
+        public Guid HotelId { get; set; }
         [Required]
         public RoomType RoomType { get; set; }
         [Required]

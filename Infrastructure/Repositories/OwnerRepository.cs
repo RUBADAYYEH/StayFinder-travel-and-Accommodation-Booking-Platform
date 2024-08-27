@@ -17,7 +17,7 @@ namespace Infrastructure.Repositories
             await _context.Owners.AddAsync(owner);
             await _context.SaveChangesAsync();
         }
-        public async Task DeleteAsync(int ownerId)
+        public async Task DeleteAsync(Guid ownerId)
         {
             var owner = await _context.Owners.FindAsync(ownerId);
             if (owner != null)
@@ -30,7 +30,7 @@ namespace Infrastructure.Repositories
         {
             return await _context.Owners.ToListAsync();
         }
-        public async Task<Owner?> GetByIdAsync(int ownerId)
+        public async Task<Owner?> GetByIdAsync(Guid ownerId)
         {
             return await _context.Owners.FindAsync(ownerId);
         }

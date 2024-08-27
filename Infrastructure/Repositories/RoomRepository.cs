@@ -17,7 +17,7 @@ namespace Infrastructure.Repositories
             await _context.Rooms.AddAsync(room);
             await _context.SaveChangesAsync();
         }
-        public async Task DeleteAsync(int roomId)
+        public async Task DeleteAsync(Guid roomId)
         {
 
             var room = await _context.Rooms.FindAsync(roomId);
@@ -33,7 +33,7 @@ namespace Infrastructure.Repositories
                    .Include(r => r.Reservations).Include(b => b.Hotel)
                    .AsQueryable();
         }
-        public async Task<Room?> GetByIdAsync(int roomId)
+        public async Task<Room?> GetByIdAsync(Guid roomId)
         {
             var room = await _context.Rooms.FindAsync(roomId);
             if (room != null)

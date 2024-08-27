@@ -2,7 +2,7 @@
 {
     public class UpdateOwnerRequest
     {
-        public int OwnerId { get; set; }
+        public Guid OwnerId { get; set; }
         public string OwnerName { get; set; } = string.Empty;
     }
 }

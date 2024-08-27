@@ -32,7 +32,7 @@ public class RoomService : IRoomService
         await _roomRepository.AddAsync(room);
     }
 
-    public async Task DeleteRoomAsync(int roomId)
+    public async Task DeleteRoomAsync(Guid roomId)
     {
         var room = _roomRepository.GetByIdAsync(roomId);
         if (room == null)
@@ -46,7 +46,7 @@ public class RoomService : IRoomService
         return _roomRepository.GetAllAsync();
     }
 
-    public async Task<Room?> GetById(int roomId)
+    public async Task<Room?> GetById(Guid roomId)
     {
         var room = await _roomRepository.GetByIdAsync(roomId);
         if (room != null)
@@ -56,7 +56,7 @@ public class RoomService : IRoomService
         return null;
     }
 
-    public Task<Room> GetRoomDetailsByIdAsync(int roomId)
+    public Task<Room> GetRoomDetailsByIdAsync(Guid roomId)
     {
         var room = _roomRepository.GetByIdAsync(roomId);
         if (room == null)

@@ -20,7 +20,7 @@ namespace Application.Services
             await _ownerRepository.AddAsync(owner);
         }
 
-        public async Task DeleteOwnerAsync(int ownerId)
+        public async Task DeleteOwnerAsync(Guid ownerId)
         {
             var owner = _ownerRepository.GetByIdAsync(ownerId);
             if (owner != null)
@@ -34,7 +34,7 @@ namespace Application.Services
             return await _ownerRepository.GetAllAsync();
         }
 
-        public async Task<Owner?> GetById(int ownerId)
+        public async Task<Owner?> GetById(Guid ownerId)
         {
             var owner = await _ownerRepository.GetByIdAsync(ownerId);
             if (owner != null)

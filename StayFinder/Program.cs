@@ -36,6 +36,8 @@ builder.Services.AddScoped<ITrendingRepository, TrendingRepository>();
 builder.Services.AddScoped<ITrendingService,TrendingService>();
 builder.Services.AddScoped<IWeatherService, WeatherService>();
 builder.Services.AddScoped<IdentityService, IdentityService>();
+builder.Services.AddSingleton<IPaymentService, PaymentService>();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHttpClient<IWeatherService, WeatherService>();

@@ -3,9 +3,10 @@ namespace Application.Dtos
 {
     public class CreateReservationRequest
     {
-        public int ReservationId { get; set; }
+        public Guid PaymentId { get; set; }
+        public Guid ReservationId { get; set; }
         [Required]
-        public int RoomId { get; set; }
+        public Guid RoomId { get; set; }
         [Required]
         public DateTime CheckInDate { get; set; }
         [Required]

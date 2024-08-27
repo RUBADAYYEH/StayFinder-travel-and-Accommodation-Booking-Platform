@@ -2,7 +2,7 @@
 {
     public class UpdateHotelRequest
     {
-        public int HotelId { get; set; }
+        public Guid HotelId { get; set; }
         public string HotelName { get; set; } = string.Empty;
         public string HotelDescription { get; set; } = string.Empty;
         public int RoomCount { get; set; } = 0;

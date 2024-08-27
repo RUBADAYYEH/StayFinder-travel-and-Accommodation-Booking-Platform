@@ -5,8 +5,8 @@ namespace Domain.Abstractions
     {
         Task AddAsync(Owner owner);
         Task UpdateAsync(Owner owner);
-        Task DeleteAsync(int ownerId);
-        Task<Owner?> GetByIdAsync(int ownerId);
+        Task DeleteAsync(Guid ownerId);
+        Task<Owner?> GetByIdAsync(Guid ownerId);
         Task<IEnumerable<Owner>> GetAllAsync();
     }
 }

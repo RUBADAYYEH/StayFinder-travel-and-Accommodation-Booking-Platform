@@ -1,6 +1,5 @@
 ﻿using Application.Services.Identity;
 using Infrastructure;
-using Infrastructure.Migrations;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Client;

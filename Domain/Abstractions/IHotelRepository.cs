@@ -5,11 +5,11 @@ namespace Domain.Abstractions
     {
         Task AddAsync(Hotel hotel);
         Task UpdateAsync(Hotel hotel);
-        Task DeleteAsync(int hotelId);
-        Task<Hotel?> GetByIdAsync(int hotelId);
+        Task DeleteAsync(Guid hotelId);
+        Task<Hotel?> GetByIdAsync(Guid hotelId);
         Task<IEnumerable<Hotel>> GetByCityAsync(string city);
         Task<IEnumerable<Hotel>> GetAllAsync();
-        Task<IEnumerable<Room>> GetRoomsForHotelId(int hotelId);
+        Task<IEnumerable<Room>> GetRoomsForHotelId(Guid hotelId);
         Task<IEnumerable<string>> GetCities();
     }
 }

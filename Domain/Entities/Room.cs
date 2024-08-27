@@ -4,8 +4,8 @@ namespace Domain.Entities
 {
     public class Room
     {
-        public int RoomId { get; set; }
-        public int HotelId { get; set; }
+        public Guid RoomId { get; set; }
+        public Guid HotelId { get; set; }
         public Hotel Hotel { get; set; } = default!;
         public RoomType RoomType { get; set; }
         public int NumberOfAdults { get; set; }

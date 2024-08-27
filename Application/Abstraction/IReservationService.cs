@@ -7,8 +7,9 @@ namespace Application.Abstraction
     {
         Task<IEnumerable<Reservation>> GetAsync();
         Task CreateReservationAsync(CreateReservationRequest request);
-        Task DeleteReservationAsync(int resId);
-        Task<Reservation?> GetReservationDetailsByIdAsync(int resId);
-        Task<IEnumerable<Reservation>> GetReservationDetailsByUserIdAsync(int userId);
+        Task DeleteReservationAsync(Guid resId);
+        Task<Reservation?> GetReservationDetailsByIdAsync(Guid resId);
+        Task<IEnumerable<Reservation>> GetReservationDetailsByUserIdAsync(Guid userId);
+        Task ConfirmReservationAsync(Guid reservationId);
     }
 }

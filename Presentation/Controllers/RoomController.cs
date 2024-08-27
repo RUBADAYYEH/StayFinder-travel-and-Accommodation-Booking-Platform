@@ -23,7 +23,7 @@ namespace Presentation.Controllers
             return Ok(rooms);
         }
         [HttpGet("{roomid}")]
-        public async Task<ActionResult<Room>> GetRoomById(int roomid)
+        public async Task<ActionResult<Room>> GetRoomById(Guid roomid)
         {
             var room = await _roomService.GetById(roomid);
             if (room != null)
@@ -33,7 +33,7 @@ namespace Presentation.Controllers
             return NotFound();
         }
         [HttpPatch("{id:int}")]
-        public async Task<IActionResult> PatchRoom(int id, [FromBody] UpdateRoomRequest updateRequest)
+        public async Task<IActionResult> PatchRoom(Guid id, [FromBody] UpdateRoomRequest updateRequest)
         {
             updateRequest.RoomId = id;
             var result = await _roomService.UpdateRoomAsync(updateRequest);
@@ -44,7 +44,7 @@ namespace Presentation.Controllers
             return NoContent();
         }
         [HttpDelete("{roomid}")]
-        public async Task<ActionResult> DeleteRoom( int roomid)
+        public async Task<ActionResult> DeleteRoom(Guid roomid)
         {
             var room = _roomService.GetById(roomid);
             if (room == null)

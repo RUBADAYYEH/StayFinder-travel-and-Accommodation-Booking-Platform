@@ -64,7 +64,7 @@ public class HotelService : IHotelService
         return true; //update was successful
     }
 
-    public async Task DeleteHotelAsync(int hotelId)
+    public async Task DeleteHotelAsync(Guid hotelId)
     {
         var hotel = _hotelRepository.GetByIdAsync(hotelId);
         if (hotel == null) throw new KeyNotFoundException("Hotel not found");
@@ -72,7 +72,7 @@ public class HotelService : IHotelService
         await _hotelRepository.DeleteAsync(hotelId);
     }
 
-    public async Task<Hotel?> GetHotelDetailsByIdAsync(int hotelId)
+    public async Task<Hotel?> GetHotelDetailsByIdAsync(Guid hotelId)
     {
         return await _hotelRepository.GetByIdAsync(hotelId);
     }
@@ -87,7 +87,7 @@ public class HotelService : IHotelService
         return _hotelRepository.GetAllAsync();
     }
 
-    public async Task<Hotel?> GetById(int hotelId)
+    public async Task<Hotel?> GetById(Guid hotelId)
     {
         var hotel = await _hotelRepository.GetByIdAsync(hotelId);
         if (hotel != null)
@@ -97,7 +97,7 @@ public class HotelService : IHotelService
         return null;
     }
 
-    public async Task<IEnumerable<Room>?> GetRoomsForHotelId(int hotelId)
+    public async Task<IEnumerable<Room>?> GetRoomsForHotelId(Guid hotelId)
     {
         var rooms = await _hotelRepository.GetRoomsForHotelId(hotelId);
         if (rooms.Any())
