@@ -1,6 +1,7 @@
 ﻿using Application.Abstraction;
 using Application.Dtos;
 using Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Presentation.Controllers
 {
     [Route("hotels")]
+    [Authorize]
     public class HotelController : ControllerBase
     {
         private readonly IHotelService _hotelService;
@@ -19,6 +21,7 @@ namespace Presentation.Controllers
             _roomService = roomService;
         }
         [HttpGet]
+        [Authorize(Roles ="Admin")]
         public async Task<ActionResult<IEnumerable<Hotel>>> GetHotels()
         {
             var hotels = await _hotelService.GetAllAsync();

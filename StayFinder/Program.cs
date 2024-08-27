@@ -1,10 +1,12 @@
 using Application.Abstraction;
+using Application.Extensions;
 using Application.Services;
+using Application.Services.Identity;
 using Domain.Abstractions;
 using Infrastructure;
 using Infrastructure.Repositories;
+using Microsoft.AspNetCore.Rewrite;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Presentation.Controllers;
 using System.Text.Json.Serialization;
 
@@ -33,10 +35,12 @@ builder.Services.AddScoped<IReservationService, ReservationService>();
 builder.Services.AddScoped<ITrendingRepository, TrendingRepository>();
 builder.Services.AddScoped<ITrendingService,TrendingService>();
 builder.Services.AddScoped<IWeatherService, WeatherService>();
+builder.Services.AddScoped<IdentityService, IdentityService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHttpClient<IWeatherService, WeatherService>();
-
+builder.RegisterAuthentication();
+builder.Services.AddSwagger();
 var app = builder.Build();
 
 
@@ -45,12 +49,16 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.UseRewriter(new Microsoft.AspNetCore.Rewrite.RewriteOptions()
+       .AddRedirect("^$", "swagger"));
 }
 else
 {
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
+
+
 
 app.UseHttpsRedirection();
 app.UseAuthorization();
