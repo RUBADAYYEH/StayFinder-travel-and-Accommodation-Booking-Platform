@@ -1,6 +1,7 @@
 ﻿using Application.Abstraction;
 using Application.Dtos;
 using Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -20,6 +21,7 @@ namespace Presentation.Controllers
             _paymentService = paymentService;
             _contextAccessor = contextAccessor;
         }
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Reservation>>> GetAll()
         {
