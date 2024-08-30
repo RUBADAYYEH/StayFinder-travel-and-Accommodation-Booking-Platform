@@ -1,6 +1,7 @@
 ﻿using Application.Abstraction;
 using Application.Dtos;
 using Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -32,7 +33,8 @@ namespace Presentation.Controllers
             }
             return NotFound();
         }
-        [HttpPatch("{id:int}")]
+        [Authorize(Roles = "Admin")]
+        [HttpPatch("{id:Guid}")]
         public async Task<IActionResult> PatchRoom(Guid id, [FromBody] UpdateRoomRequest updateRequest)
         {
             updateRequest.RoomId = id;
@@ -43,6 +45,7 @@ namespace Presentation.Controllers
             }
             return NoContent();
         }
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{roomid}")]
         public async Task<ActionResult> DeleteRoom(Guid roomid)
         {

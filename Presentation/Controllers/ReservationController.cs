@@ -1,7 +1,9 @@
 ﻿using Application.Abstraction;
 using Application.Dtos;
 using Domain.Entities;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace Presentation.Controllers
 {
@@ -10,11 +12,13 @@ namespace Presentation.Controllers
     {
         private readonly IReservationService _reservationService;
         private readonly IPaymentService _paymentService;
+        private readonly IHttpContextAccessor _contextAccessor;
 
-        public ReservationController(IReservationService reservationService, IPaymentService paymentService)
+        public ReservationController(IReservationService reservationService, IPaymentService paymentService, IHttpContextAccessor contextAccessor)
         {
             _reservationService = reservationService;
             _paymentService = paymentService;
+            _contextAccessor = contextAccessor;
         }
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Reservation>>> GetAll()
@@ -22,6 +26,18 @@ namespace Presentation.Controllers
             var res = await _reservationService.GetAsync();
             return Ok(res);
         }
+        [HttpGet("unconfirmed")]
+        public ActionResult<CreateReservationRequest> GetUnconfirmed()
+        {
+            var reservations = _contextAccessor.HttpContext!.Session.GetString("Reservation");
+            if (reservations == null)
+            {
+                return NotFound("No unconfirmed reservations found.");
+            }
+            var res = JsonConvert.DeserializeObject<CreateReservationRequest>(reservations);
+            return Ok(res);
+        }
+
 
         [HttpGet("{reservationid}")]
         public async Task<IActionResult> Get(Guid reservationid)
@@ -40,15 +56,16 @@ namespace Presentation.Controllers
             {
                 return BadRequest();
             }
+            var PricePerNight = await _reservationService.GetRoomPricePerNight(reservation.RoomId);
+            var TotalFees = ((reservation.CheckOutDate - reservation.CheckInDate).Days) * PricePerNight;
 
-           
-            var totalAmount = reservation.TotalFees;
+            var payment = await _paymentService.CreatePayment(TotalFees, "eur");
 
-            var payment = _paymentService.CreatePayment(totalAmount, "usd");
-
-            reservation.PaymentId = payment.PaymentId; 
-            await _reservationService.CreateReservationAsync(reservation);
-
+            reservation.PaymentId = payment.PaymentId;
+            reservation.TotalFees = TotalFees;
+            reservation.ReservationId = Guid.NewGuid();
+            var reservationString = JsonConvert.SerializeObject(reservation);
+            _contextAccessor.HttpContext!.Session.SetString("Reservation", reservationString);
             return CreatedAtAction(nameof(Get), new { reservationid = reservation.ReservationId }, new
             {
                 reservation.ReservationId,
@@ -57,22 +74,34 @@ namespace Presentation.Controllers
             });
         }
         [HttpPost("{reservationId}/confirm")]
-        public IActionResult ConfirmBooking(Guid reservationId, [FromBody] Reservation request)
+        public async Task<IActionResult> ConfirmBooking(Guid reservationId)
         {
-            // Process the payment
-            var paymentSuccess = _paymentService.ProcessPayment(request.PaymentId);
 
+            var reservations = _contextAccessor.HttpContext!.Session.GetString("Reservation");
+            if (reservations == null)
+            {
+                return NotFound("No unconfirmed reservations found.");
+            }
+            var res = JsonConvert.DeserializeObject<CreateReservationRequest>(reservations);
+
+            if (res == null || res.ReservationId != reservationId || res.ReservationId == null)
+            {
+                return NotFound("Reservation not found");
+            }
+            var paymentSuccess = await _paymentService.ProcessPayment(res.PaymentId!.Value);
             if (!paymentSuccess)
             {
                 return BadRequest("Payment failed");
             }
-
-            _reservationService.ConfirmReservationAsync(reservationId);
+            var finalres = new Reservation() { ReservationId = reservationId, PaymentId = res.PaymentId.GetValueOrDefault(), RoomId = res.RoomId, CheckInDate = res.CheckInDate, CheckOutDate = res.CheckOutDate, TotalFees = res.TotalFees!.GetValueOrDefault() };
+            
+            await _reservationService.ConfirmReservationAsync(finalres);
+            HttpContext.Session.Remove("Reservation");
 
             return Ok("Booking confirmed");
         }
         [HttpDelete("{reservationid}")]
-        public async Task<ActionResult> DeleteReservation(Guid reservationid )
+        public async Task<ActionResult> DeleteReservation(Guid reservationid)
         {
             var res = _reservationService.GetReservationDetailsByIdAsync(reservationid);
             if (res == null)
@@ -82,5 +111,7 @@ namespace Presentation.Controllers
             await _reservationService.DeleteReservationAsync(reservationid);
             return NoContent();
         }
+
+
     }
 }

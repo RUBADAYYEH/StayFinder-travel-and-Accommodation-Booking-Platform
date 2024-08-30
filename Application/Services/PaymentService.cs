@@ -1,39 +1,45 @@
 ﻿using Application.Abstraction;
+using Domain.Abstractions;
 using Domain.Entities;
 public class PaymentService : IPaymentService
 {
-    private readonly List<Payment> _payments = new List<Payment>();
+    private readonly IPaymentRepository _paymentRepository;
 
-    public Payment CreatePayment(decimal amount, string currency)
+    public PaymentService(IPaymentRepository paymentRepository)
+    {
+        _paymentRepository = paymentRepository;
+    }
+
+    public async Task<Payment> CreatePayment(decimal amount, string currency)
     {
         var payment = new Payment
         {
-            PaymentId = Guid.NewGuid(),
             Amount = amount,
             Currency = currency,
             Status = "Pending",
             CreatedAt = DateTime.UtcNow
         };
 
-        _payments.Add(payment);
+        await _paymentRepository.AddAsync(payment);
         return payment;
     }
 
-    public bool ProcessPayment(Guid paymentId)
+    public async Task<bool> ProcessPayment(Guid paymentId)
     {
-        var payment = _payments.FirstOrDefault(p => p.PaymentId == paymentId);
+        var payment =await  _paymentRepository.GetByIdAsync(paymentId);
         if (payment == null)
         {
             return false;
         }
-
-        // Simulate payment processing logic
         payment.Status = "Succeeded";
+        await _paymentRepository.UpdateAsync(payment);
         return true;
     }
-    public Payment? GetPaymentById(Guid paymentId)
+    public async Task<Payment> GetPaymentById(Guid paymentId)
     {
-        var payment = _payments.FirstOrDefault(p => p.PaymentId == paymentId);
+        var payment = await _paymentRepository.GetByIdAsync(paymentId);
         return payment;
     }
+
+   
 }

@@ -21,7 +21,7 @@ namespace Presentation.Controllers
             _roomService = roomService;
         }
         [HttpGet]
-        [Authorize(Roles ="Admin")]
+       
         public async Task<ActionResult<IEnumerable<Hotel>>> GetHotels()
         {
             var hotels = await _hotelService.GetAllAsync();
@@ -37,6 +37,7 @@ namespace Presentation.Controllers
             }
             return NotFound();
         }
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> CreateHotel([FromBody] CreateHotelRequest hotel)
         {
@@ -48,6 +49,7 @@ namespace Presentation.Controllers
 
             return CreatedAtAction(nameof(GetHotels), new { id = hotel.HotelId }, hotel);
         }
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{hotelid}")]
         public async Task<ActionResult> DeleteHotel(Guid hotelid)
         {
@@ -71,6 +73,7 @@ namespace Presentation.Controllers
             return Ok(rooms);
 
         }
+        [Authorize(Roles = "Admin")]
         [HttpPost("{hotelid}/rooms")]
         public async Task<IActionResult> CreateRoom(Guid hotelid, [FromBody] CreateRoomRequest room)
         {
@@ -91,6 +94,7 @@ namespace Presentation.Controllers
 
             return NoContent();
         }
+        [Authorize(Roles = "Admin")]
         [HttpPatch("{id:int}")]
         public async Task<IActionResult> PatchHotel(Guid id, [FromBody] UpdateHotelRequest updateRequest)
         {

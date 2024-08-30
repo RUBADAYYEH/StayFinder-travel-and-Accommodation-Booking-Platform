@@ -1,7 +1,9 @@
 ﻿using Application.Abstraction;
 using Application.Dtos;
+using Azure.Core;
 using Domain.Abstractions;
 using Domain.Entities;
+using Microsoft.AspNetCore.Http;
 
 namespace Application.Services
 {
@@ -9,50 +11,20 @@ namespace Application.Services
     {
         private readonly IReservationRepository _reservationRepository;
         private readonly IRoomRepository _roomRepository;
-        private readonly IPaymentService _paymentService;
 
-        private List<Reservation> tempReservations = new List<Reservation>();
-        public ReservationService(IReservationRepository reservationRepository, IRoomRepository roomRepository, IPaymentService paymentService)
+        public ReservationService(IReservationRepository reservationRepository, IRoomRepository roomRepository)
         {
             _reservationRepository = reservationRepository;
             _roomRepository = roomRepository;
-            _paymentService = paymentService;
-        }
-        public async Task CreateReservationAsync(CreateReservationRequest request)
-        {
-            if (await _reservationRepository.GetReservationByIdAsync(request.ReservationId) != null)
-            {
-                throw new HttpRequestException("Existing Reservation with id found");
-            }
-
-            var room = await _roomRepository.GetByIdAsync(request.RoomId);
-            if (room is null)
-            {
-                throw new KeyNotFoundException("Room not found");
-            }
-            var TotalFees = ((request.CheckOutDate - request.CheckInDate).Days) * room.PricePerNight;
-            var res = new Reservation { ReservationId = request.ReservationId, PaymentId=request.PaymentId, RoomId = request.RoomId, CheckInDate = request.CheckInDate, CheckOutDate = request.CheckOutDate, TotalFees = TotalFees };
          
-            tempReservations.Add(res);
         }
-        public async Task ConfirmReservationAsync(Guid reservationId)
+       
+        public async Task ConfirmReservationAsync(Reservation reservation)
         {
-            var reservation = tempReservations.FirstOrDefault(r => r.ReservationId==reservationId);
-            if (reservation == null)
-            {
-                throw new KeyNotFoundException("Reservation not found");
-            }
-
-            var payment = _paymentService.GetPaymentById(reservation.PaymentId);
-            if (payment == null || payment.Status != "Succeeded")
-            {
-                throw new InvalidOperationException("Payment not completed or failed");
-            }
-
             await _reservationRepository.AddReservationAsync(reservation);
 
         }
-       
+
 
         public async Task DeleteReservationAsync(Guid resId)
         {
@@ -79,5 +51,15 @@ namespace Application.Services
             return await _reservationRepository.GetReservationsforUserId(userId);
         }
 
+        public async Task<decimal> GetRoomPricePerNight(Guid roomId)
+        {
+            var room = await _roomRepository.GetByIdAsync(roomId);
+            if (room is null)
+            {
+                throw new KeyNotFoundException("Room not found");
+            }
+            
+            return room.PricePerNight;
+        }
     }
 }
