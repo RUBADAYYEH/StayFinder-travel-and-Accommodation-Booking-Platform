@@ -1,9 +1,6 @@
 ﻿using Application.Abstraction;
-using Application.Dtos;
-using Azure.Core;
 using Domain.Abstractions;
 using Domain.Entities;
-using Microsoft.AspNetCore.Http;
 
 namespace Application.Services
 {
@@ -16,9 +13,9 @@ namespace Application.Services
         {
             _reservationRepository = reservationRepository;
             _roomRepository = roomRepository;
-         
+
         }
-       
+
         public async Task ConfirmReservationAsync(Reservation reservation)
         {
             await _reservationRepository.AddReservationAsync(reservation);
@@ -28,7 +25,7 @@ namespace Application.Services
 
         public async Task DeleteReservationAsync(Guid resId)
         {
-            var res = _reservationRepository.GetReservationByIdAsync(resId);
+            var res = await _reservationRepository.GetReservationByIdAsync(resId);
             if (res == null)
             {
                 throw new KeyNotFoundException("Reservation not found");
@@ -43,7 +40,12 @@ namespace Application.Services
 
         public async Task<Reservation?> GetReservationDetailsByIdAsync(Guid resId)
         {
-            return await _reservationRepository.GetReservationByIdAsync(resId);
+            var res = await _reservationRepository.GetReservationByIdAsync(resId);
+            if (res == null)
+            {
+                throw new InvalidOperationException("Reservation id does not exist");
+            }
+            return res;
         }
 
         public async Task<IEnumerable<Reservation>> GetReservationDetailsByUserIdAsync(Guid userId)
@@ -58,7 +60,7 @@ namespace Application.Services
             {
                 throw new KeyNotFoundException("Room not found");
             }
-            
+
             return room.PricePerNight;
         }
     }

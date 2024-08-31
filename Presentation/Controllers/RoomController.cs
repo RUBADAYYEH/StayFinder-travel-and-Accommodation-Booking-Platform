@@ -18,7 +18,7 @@ namespace Presentation.Controllers
             _hotelervice = hotelService;
         }
         [HttpGet]
-        public  ActionResult<IEnumerable<Room>> GetRooms()
+        public ActionResult<IEnumerable<Room>> GetRooms()
         {
             var rooms = _roomService.GetAllAsync();
             return Ok(rooms);

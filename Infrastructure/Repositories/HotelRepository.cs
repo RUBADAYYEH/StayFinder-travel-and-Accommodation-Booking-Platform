@@ -42,9 +42,9 @@ namespace Infrastructure.Repositories
         public async Task<IEnumerable<string>> GetCities()
         {
             var uniqueCities = await _context.Hotels
-                .Select(h => h.City) 
-                   .Distinct()         
-                    .ToListAsync();          
+                .Select(h => h.City)
+                   .Distinct()
+                    .ToListAsync();
 
             return uniqueCities;
         }

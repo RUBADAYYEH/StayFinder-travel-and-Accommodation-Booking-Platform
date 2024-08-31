@@ -9,7 +9,7 @@ namespace Application.Abstraction
         Task DeleteRoomAsync(Guid roomId);
         Task<Room> GetRoomDetailsByIdAsync(Guid roomId);
         Task<Room?> GetById(Guid roomId);
-       IEnumerable<Room> SearchRoomsAsync(SearchRoomRequest request);
+        IEnumerable<Room> SearchRoomsAsync(SearchRoomRequest request);
         IQueryable<Room> GetAllAsync();
     }
 }

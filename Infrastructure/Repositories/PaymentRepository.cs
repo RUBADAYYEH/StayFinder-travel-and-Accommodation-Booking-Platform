@@ -32,7 +32,7 @@ namespace Infrastructure.Repositories
         }
         public async Task<Payment> GetByIdAsync(Guid paymentId)
         {
-            return await _context.Payments.FirstAsync(p => p.PaymentId==paymentId);
+            return await _context.Payments.FirstAsync(p => p.PaymentId == paymentId);
         }
         public async Task UpdateAsync(Payment payment)
         {

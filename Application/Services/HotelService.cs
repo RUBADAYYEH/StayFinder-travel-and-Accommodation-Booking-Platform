@@ -13,7 +13,12 @@ public class HotelService : IHotelService
     }
     public async Task CreateHotelAsync(CreateHotelRequest request)
     {
-        var hotel = new Hotel
+        var hotel = await _hotelRepository.GetByIdAsync(request.HotelId);
+        if (hotel != null)
+        {
+            throw new InvalidOperationException("Hotel with id already exist");
+        }
+        var finalHotel = new Hotel
         {
             HotelId = request.HotelId,
             HotelName = request.HotelName,
@@ -66,7 +71,7 @@ public class HotelService : IHotelService
 
     public async Task DeleteHotelAsync(Guid hotelId)
     {
-        var hotel = _hotelRepository.GetByIdAsync(hotelId);
+        var hotel =await _hotelRepository.GetByIdAsync(hotelId);
         if (hotel == null) throw new KeyNotFoundException("Hotel not found");
 
         await _hotelRepository.DeleteAsync(hotelId);
@@ -74,7 +79,9 @@ public class HotelService : IHotelService
 
     public async Task<Hotel?> GetHotelDetailsByIdAsync(Guid hotelId)
     {
-        return await _hotelRepository.GetByIdAsync(hotelId);
+        var hotel = await _hotelRepository.GetByIdAsync(hotelId);
+        if (hotel == null) throw new KeyNotFoundException("Hotel not found");
+        return hotel;
     }
 
     public async Task<IEnumerable<Hotel>> GetHotelsByCityAsync(string city)
@@ -104,7 +111,7 @@ public class HotelService : IHotelService
         {
             return rooms;
         }
-        return null;
+        return new List<Room>();
     }
 
     public async Task<IEnumerable<string>> GetCities()

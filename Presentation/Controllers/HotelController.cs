@@ -4,6 +4,7 @@ using Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 
 
 namespace Presentation.Controllers
@@ -21,7 +22,7 @@ namespace Presentation.Controllers
             _roomService = roomService;
         }
         [HttpGet]
-       
+
         public async Task<ActionResult<IEnumerable<Hotel>>> GetHotels()
         {
             var hotels = await _hotelService.GetAllAsync();

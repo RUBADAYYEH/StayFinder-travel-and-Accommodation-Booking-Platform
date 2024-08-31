@@ -26,7 +26,7 @@ public class PaymentService : IPaymentService
 
     public async Task<bool> ProcessPayment(Guid paymentId)
     {
-        var payment =await  _paymentRepository.GetByIdAsync(paymentId);
+        var payment = await _paymentRepository.GetByIdAsync(paymentId);
         if (payment == null)
         {
             return false;
@@ -38,8 +38,12 @@ public class PaymentService : IPaymentService
     public async Task<Payment> GetPaymentById(Guid paymentId)
     {
         var payment = await _paymentRepository.GetByIdAsync(paymentId);
+        if (payment == null)
+        {
+            throw new InvalidOperationException("Payment Id not found");
+        }
         return payment;
     }
 
-   
+
 }

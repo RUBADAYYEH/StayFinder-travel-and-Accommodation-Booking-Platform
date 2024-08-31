@@ -2,7 +2,6 @@
 using Infrastructure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Identity.Client;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
@@ -113,6 +112,6 @@ namespace Presentation.Controllers
     }
     public record RegisterUser(string Email, string Password, string FirstName, string LastName, Role Role);
     public record LoginUser(string Email, string Paswword);
-    public record AuthenticationResult (string Token);
+    public record AuthenticationResult(string Token);
 
 }

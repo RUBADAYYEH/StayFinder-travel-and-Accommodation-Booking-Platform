@@ -8,13 +8,14 @@ namespace Presentation.Controllers
     public class FeaturedController : ControllerBase
     {
         private readonly IWeatherService _weatherService;
-        public FeaturedController(IWeatherService weatherService) {
+        public FeaturedController(IWeatherService weatherService)
+        {
             _weatherService = weatherService;
         }
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Featured>>> Get()
         {
-            var res= await _weatherService.GetSuggestedCitiesBasedOnCurrentTemp("Jerusalem");
+            var res = await _weatherService.GetSuggestedCitiesBasedOnCurrentTemp("Jerusalem");
             return Ok(res);
         }
 
