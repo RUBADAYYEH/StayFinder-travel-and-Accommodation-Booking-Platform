@@ -1,13 +1,12 @@
 ﻿using Domain.Entities;
-
 namespace Domain.Abstractions
 {
     public interface IRoomRepository
     {
-        Task<Room> AddAsync(Room room);
-        Task<Room> UpdateAsync(Room room);
-        Task DeleteAsync(Room room);
-        Task<Room> GetByIdAsync(int roomId);
-        Task<IEnumerable<Room>> GetAllAsync();
+        Task AddAsync(Room room);
+        Task UpdateAsync(Room room);
+        Task DeleteAsync(int roomId);
+        Task<Room?> GetByIdAsync(int roomId);
+        IQueryable<Room> GetAllAsync();
     }
 }
