@@ -10,5 +10,6 @@ namespace Domain.Abstractions
         Task<IEnumerable<Hotel>> GetByCityAsync(string city);
         Task<IEnumerable<Hotel>> GetAllAsync();
         Task<IEnumerable<Room>> GetRoomsForHotelId(int hotelId);
+        Task<IEnumerable<string>> GetCities();
     }
 }

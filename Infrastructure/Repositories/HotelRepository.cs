@@ -38,6 +38,17 @@ namespace Infrastructure.Repositories
         {
             return await _context.Hotels.FindAsync(hotelId);
         }
+
+        public async Task<IEnumerable<string>> GetCities()
+        {
+            var uniqueCities = await _context.Hotels
+                .Select(h => h.City) 
+                   .Distinct()         
+                    .ToListAsync();          
+
+            return uniqueCities;
+        }
+
         public async Task<IEnumerable<Room>> GetRoomsForHotelId(int hotelId)
         {
             return await _context.Rooms.Where(r => r.HotelId == hotelId).ToListAsync();
@@ -47,6 +58,7 @@ namespace Infrastructure.Repositories
             _context.Hotels.Update(hotel);
             await _context.SaveChangesAsync();
         }
+
 
     }
 }

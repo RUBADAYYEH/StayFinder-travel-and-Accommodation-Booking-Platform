@@ -13,5 +13,6 @@ namespace Application.Abstraction
         Task<IEnumerable<Hotel>> GetAllAsync();
         Task<Hotel?> GetById(int hotelId);
         Task<IEnumerable<Room>?> GetRoomsForHotelId(int hotelId);
+        Task<IEnumerable<string>> GetCities();
     }
 }
