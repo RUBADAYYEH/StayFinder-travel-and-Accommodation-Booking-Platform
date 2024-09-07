@@ -1,5 +1,4 @@
 ﻿using Application.Abstraction;
-using Application.Dtos;
 using Domain.Abstractions;
 using Domain.Entities;
 
@@ -9,31 +8,24 @@ namespace Application.Services
     {
         private readonly IReservationRepository _reservationRepository;
         private readonly IRoomRepository _roomRepository;
+
         public ReservationService(IReservationRepository reservationRepository, IRoomRepository roomRepository)
         {
             _reservationRepository = reservationRepository;
             _roomRepository = roomRepository;
-        }
-        public async Task CreateReservationAsync(CreateReservationRequest request)
-        {
-            if (await _reservationRepository.GetReservationByIdAsync(request.ReservationId) != null)
-            {
-                throw new HttpRequestException("Existing Reservation with id found");
-            }
 
-            var room = await _roomRepository.GetByIdAsync(request.RoomId);
-            if (room is null)
-            {
-                throw new KeyNotFoundException("Room not found");
-            }
-            var TotalFees = ((request.CheckOutDate - request.CheckInDate).Days) * room.PricePerNight;
-            var res = new Reservation { ReservationId = request.ReservationId, RoomId = request.RoomId, CheckInDate = request.CheckInDate, CheckOutDate = request.CheckOutDate, TotalFees = TotalFees };
-            await _reservationRepository.AddReservationAsync(res);
         }
 
-        public async Task DeleteReservationAsync(int resId)
+        public async Task ConfirmReservationAsync(Reservation reservation)
         {
-            var res = _reservationRepository.GetReservationByIdAsync(resId);
+            await _reservationRepository.AddReservationAsync(reservation);
+
+        }
+
+
+        public async Task DeleteReservationAsync(Guid resId)
+        {
+            var res = await _reservationRepository.GetReservationByIdAsync(resId);
             if (res == null)
             {
                 throw new KeyNotFoundException("Reservation not found");
@@ -46,15 +38,30 @@ namespace Application.Services
             return await _reservationRepository.GetAsync();
         }
 
-        public async Task<Reservation?> GetReservationDetailsByIdAsync(int resId)
+        public async Task<Reservation?> GetReservationDetailsByIdAsync(Guid resId)
         {
-            return await _reservationRepository.GetReservationByIdAsync(resId);
+            var res = await _reservationRepository.GetReservationByIdAsync(resId);
+            if (res == null)
+            {
+                throw new InvalidOperationException("Reservation id does not exist");
+            }
+            return res;
         }
 
-        public async Task<IEnumerable<Reservation>> GetReservationDetailsByUserIdAsync(int userId)
+        public async Task<IEnumerable<Reservation>> GetReservationDetailsByUserIdAsync(Guid userId)
         {
             return await _reservationRepository.GetReservationsforUserId(userId);
         }
 
+        public async Task<decimal> GetRoomPricePerNight(Guid roomId)
+        {
+            var room = await _roomRepository.GetByIdAsync(roomId);
+            if (room is null)
+            {
+                throw new KeyNotFoundException("Room not found");
+            }
+
+            return room.PricePerNight;
+        }
     }
 }

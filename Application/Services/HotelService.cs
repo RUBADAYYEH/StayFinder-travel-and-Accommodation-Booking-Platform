@@ -13,7 +13,12 @@ public class HotelService : IHotelService
     }
     public async Task CreateHotelAsync(CreateHotelRequest request)
     {
-        var hotel = new Hotel
+        var hotel = await _hotelRepository.GetByIdAsync(request.HotelId);
+        if (hotel != null)
+        {
+            throw new InvalidOperationException("Hotel with id already exist");
+        }
+        var finalHotel = new Hotel
         {
             HotelId = request.HotelId,
             HotelName = request.HotelName,
@@ -64,17 +69,19 @@ public class HotelService : IHotelService
         return true; //update was successful
     }
 
-    public async Task DeleteHotelAsync(int hotelId)
+    public async Task DeleteHotelAsync(Guid hotelId)
     {
-        var hotel = _hotelRepository.GetByIdAsync(hotelId);
+        var hotel =await _hotelRepository.GetByIdAsync(hotelId);
         if (hotel == null) throw new KeyNotFoundException("Hotel not found");
 
         await _hotelRepository.DeleteAsync(hotelId);
     }
 
-    public async Task<Hotel?> GetHotelDetailsByIdAsync(int hotelId)
+    public async Task<Hotel?> GetHotelDetailsByIdAsync(Guid hotelId)
     {
-        return await _hotelRepository.GetByIdAsync(hotelId);
+        var hotel = await _hotelRepository.GetByIdAsync(hotelId);
+        if (hotel == null) throw new KeyNotFoundException("Hotel not found");
+        return hotel;
     }
 
     public async Task<IEnumerable<Hotel>> GetHotelsByCityAsync(string city)
@@ -87,7 +94,7 @@ public class HotelService : IHotelService
         return _hotelRepository.GetAllAsync();
     }
 
-    public async Task<Hotel?> GetById(int hotelId)
+    public async Task<Hotel?> GetById(Guid hotelId)
     {
         var hotel = await _hotelRepository.GetByIdAsync(hotelId);
         if (hotel != null)
@@ -97,14 +104,14 @@ public class HotelService : IHotelService
         return null;
     }
 
-    public async Task<IEnumerable<Room>?> GetRoomsForHotelId(int hotelId)
+    public async Task<IEnumerable<Room>?> GetRoomsForHotelId(Guid hotelId)
     {
         var rooms = await _hotelRepository.GetRoomsForHotelId(hotelId);
         if (rooms.Any())
         {
             return rooms;
         }
-        return null;
+        return new List<Room>();
     }
 
     public async Task<IEnumerable<string>> GetCities()

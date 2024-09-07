@@ -16,17 +16,24 @@ namespace Application.Services
 
         public async Task CreateOwnerAsync(CreateOwnerRequest request)
         {
+            var ow= await _ownerRepository.GetByIdAsync(request.OwnerId);
+            if (ow != null)
+            {
+                throw new InvalidOperationException("Owner with id already exist");
+            }
             var owner = new Owner() { OwnerId = request.OwnerId, OwnerName = request.OwnerName };
             await _ownerRepository.AddAsync(owner);
         }
 
-        public async Task DeleteOwnerAsync(int ownerId)
+        public async Task DeleteOwnerAsync(Guid ownerId)
         {
-            var owner = _ownerRepository.GetByIdAsync(ownerId);
-            if (owner != null)
+            var owner = await _ownerRepository.GetByIdAsync(ownerId);
+            if (owner == null)
             {
-                await _ownerRepository.DeleteAsync(ownerId);
+                throw new InvalidOperationException("Owner with id already exist");
             }
+      
+            await _ownerRepository.DeleteAsync(ownerId);
         }
 
         public async Task<IEnumerable<Owner>> GetAllAsync()
@@ -34,7 +41,7 @@ namespace Application.Services
             return await _ownerRepository.GetAllAsync();
         }
 
-        public async Task<Owner?> GetById(int ownerId)
+        public async Task<Owner?> GetById(Guid ownerId)
         {
             var owner = await _ownerRepository.GetByIdAsync(ownerId);
             if (owner != null)
@@ -56,7 +63,7 @@ namespace Application.Services
                 owner.OwnerName = request.OwnerName;
 
                 await _ownerRepository.UpdateAsync(owner);
-               
+
             }
             return true; //update was successful
         }

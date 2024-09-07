@@ -17,7 +17,7 @@ namespace Infrastructure.Repositories
             await _context.Hotels.AddAsync(hotel);
             await _context.SaveChangesAsync();
         }
-        public async Task DeleteAsync(int hotelId)
+        public async Task DeleteAsync(Guid hotelId)
         {
             var hotel = await _context.Hotels.FindAsync(hotelId);
             if (hotel != null)
@@ -34,7 +34,7 @@ namespace Infrastructure.Repositories
         {
             return await _context.Hotels.Where(h => h.City == city).ToListAsync();
         }
-        public async Task<Hotel?> GetByIdAsync(int hotelId)
+        public async Task<Hotel?> GetByIdAsync(Guid hotelId)
         {
             return await _context.Hotels.FindAsync(hotelId);
         }
@@ -42,14 +42,14 @@ namespace Infrastructure.Repositories
         public async Task<IEnumerable<string>> GetCities()
         {
             var uniqueCities = await _context.Hotels
-                .Select(h => h.City) 
-                   .Distinct()         
-                    .ToListAsync();          
+                .Select(h => h.City)
+                   .Distinct()
+                    .ToListAsync();
 
             return uniqueCities;
         }
 
-        public async Task<IEnumerable<Room>> GetRoomsForHotelId(int hotelId)
+        public async Task<IEnumerable<Room>> GetRoomsForHotelId(Guid hotelId)
         {
             return await _context.Rooms.Where(r => r.HotelId == hotelId).ToListAsync();
         }

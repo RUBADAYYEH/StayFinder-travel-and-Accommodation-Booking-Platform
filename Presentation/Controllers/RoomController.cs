@@ -1,6 +1,7 @@
 ﻿using Application.Abstraction;
 using Application.Dtos;
 using Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,13 +18,13 @@ namespace Presentation.Controllers
             _hotelervice = hotelService;
         }
         [HttpGet]
-        public  ActionResult<IEnumerable<Room>> GetRooms()
+        public ActionResult<IEnumerable<Room>> GetRooms()
         {
             var rooms = _roomService.GetAllAsync();
             return Ok(rooms);
         }
         [HttpGet("{roomid}")]
-        public async Task<ActionResult<Room>> GetRoomById(int roomid)
+        public async Task<ActionResult<Room>> GetRoomById(Guid roomid)
         {
             var room = await _roomService.GetById(roomid);
             if (room != null)
@@ -32,8 +33,9 @@ namespace Presentation.Controllers
             }
             return NotFound();
         }
-        [HttpPatch("{id:int}")]
-        public async Task<IActionResult> PatchRoom(int id, [FromBody] UpdateRoomRequest updateRequest)
+        [Authorize(Roles = "Admin")]
+        [HttpPatch("{id:Guid}")]
+        public async Task<IActionResult> PatchRoom(Guid id, [FromBody] UpdateRoomRequest updateRequest)
         {
             updateRequest.RoomId = id;
             var result = await _roomService.UpdateRoomAsync(updateRequest);
@@ -43,8 +45,9 @@ namespace Presentation.Controllers
             }
             return NoContent();
         }
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{roomid}")]
-        public async Task<ActionResult> DeleteRoom( int roomid)
+        public async Task<ActionResult> DeleteRoom(Guid roomid)
         {
             var room = _roomService.GetById(roomid);
             if (room == null)

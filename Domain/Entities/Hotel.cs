@@ -2,8 +2,8 @@
 {
     public class Hotel
     {
-        public int HotelId { get; set; }
-        public int OwnerId { get; set; }
+        public Guid HotelId { get; set; }
+        public Guid OwnerId { get; set; }
         public Owner Owner { get; set; } = default!;
         public string HotelName { get; set; } = string.Empty;
         public string HotelDescription { get; set; } = string.Empty;

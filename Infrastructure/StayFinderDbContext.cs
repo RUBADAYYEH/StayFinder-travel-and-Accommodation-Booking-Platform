@@ -1,9 +1,10 @@
 ﻿using Domain.Entities;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-
 namespace Infrastructure
 {
-    public class StayFinderDbContext : DbContext
+    public class StayFinderDbContext : IdentityDbContext<IdentityUser>
     {
         public StayFinderDbContext(DbContextOptions options) : base(options)
         {
@@ -14,5 +15,6 @@ namespace Infrastructure
         public DbSet<Reservation> Reservations { get; set; }
         public DbSet<Review> Reviews { get; set; }
         public DbSet<WishList> WishLists { get; set; }
+        public DbSet<Payment> Payments { get; set; }
     }
 }

@@ -3,9 +3,9 @@ namespace Application.Dtos
 {
     public class CreateHotelRequest
     {
-        public int HotelId { get; set; }
+        public Guid HotelId { get; set; }
         [Required]
-        public int OwnerId { get; set; }
+        public Guid OwnerId { get; set; }
         [Required]
         public string HotelName { get; set; } = string.Empty;
         public string HotelDescription { get; set; } = string.Empty;

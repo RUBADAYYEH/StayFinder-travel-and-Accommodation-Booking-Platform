@@ -2,8 +2,8 @@
 {
     public class WishList
     {
-        public int WishListid { get; set; }
-        public int UserId { get; set; }
-        public int HotelId { get; set; }
+        public Guid WishListid { get; set; }
+        public Guid UserId { get; set; }
+        public Guid HotelId { get; set; }
     }
 }

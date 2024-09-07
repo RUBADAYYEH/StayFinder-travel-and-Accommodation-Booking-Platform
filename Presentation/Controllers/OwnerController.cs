@@ -1,6 +1,7 @@
 ﻿using Application.Abstraction;
 using Application.Dtos;
 using Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 namespace Presentation.Controllers
@@ -19,6 +20,7 @@ namespace Presentation.Controllers
             var owners = await _ownerService.GetAllAsync();
             return Ok(owners);
         }
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> CreateOwner([FromBody] CreateOwnerRequest owner)
         {
@@ -30,8 +32,9 @@ namespace Presentation.Controllers
 
             return CreatedAtAction(nameof(GetOwners), new { id = owner.OwnerId }, owner);
         }
+        [Authorize(Roles = "Admin")]
         [HttpPatch("{id:int}")]
-        public async Task<IActionResult> PatchOwner(int id, [FromBody] UpdateOwnerRequest updateRequest)
+        public async Task<IActionResult> PatchOwner(Guid id, [FromBody] UpdateOwnerRequest updateRequest)
         {
             try
             {
@@ -54,8 +57,9 @@ namespace Presentation.Controllers
                 return StatusCode(StatusCodes.Status500InternalServerError, $"An error occurred: {ex.Message}");
             }
         }
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{ownerid}")]
-        public async Task<ActionResult> DeleteOwner(int ownerid)
+        public async Task<ActionResult> DeleteOwner(Guid ownerid)
         {
             var owner = _ownerService.GetById(ownerid);
             if (owner == null)

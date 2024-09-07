@@ -7,8 +7,8 @@ namespace Application.Abstraction
     {
         Task CreateOwnerAsync(CreateOwnerRequest request);
         Task<bool> UpdateOwnerAsync(UpdateOwnerRequest request);
-        Task DeleteOwnerAsync(int ownerId);
+        Task DeleteOwnerAsync(Guid ownerId);
         Task<IEnumerable<Owner>> GetAllAsync();
-        Task<Owner?> GetById(int ownerId);
+        Task<Owner?> GetById(Guid ownerId);
     }
 }

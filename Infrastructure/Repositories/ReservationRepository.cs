@@ -17,7 +17,7 @@ namespace Infrastructure.Repositories
             await _context.Reservations.AddAsync(reservation);
             await _context.SaveChangesAsync();
         }
-        public async Task DeleteAsync(int resId)
+        public async Task DeleteAsync(Guid resId)
         {
             var res = await _context.Reservations.FindAsync(resId);
             if (res != null)
@@ -30,11 +30,11 @@ namespace Infrastructure.Repositories
         {
             return await _context.Reservations.ToListAsync();
         }
-        public async Task<Reservation?> GetReservationByIdAsync(int id)
+        public async Task<Reservation?> GetReservationByIdAsync(Guid id)
         {
             return await _context.Reservations.FindAsync(id);
         }
-        public Task<IEnumerable<Reservation>> GetReservationsforUserId(int userId)
+        public Task<IEnumerable<Reservation>> GetReservationsforUserId(Guid userId)
         {
             throw new NotImplementedException();
         }

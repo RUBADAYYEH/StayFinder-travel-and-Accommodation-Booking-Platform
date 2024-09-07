@@ -15,7 +15,7 @@ public class RoomService : IRoomService
     {
         if (await _roomRepository.GetByIdAsync(request.RoomId) != null)
         {
-            throw new HttpRequestException("Existing Room with id found");
+            throw new InvalidOperationException("Room with id already exist");
         }
         var room = new Room
         {
@@ -32,21 +32,21 @@ public class RoomService : IRoomService
         await _roomRepository.AddAsync(room);
     }
 
-    public async Task DeleteRoomAsync(int roomId)
+    public async Task DeleteRoomAsync(Guid roomId)
     {
-        var room = _roomRepository.GetByIdAsync(roomId);
+        var room = await _roomRepository.GetByIdAsync(roomId);
         if (room == null)
         {
             throw new KeyNotFoundException("Room not found");
         }
-        await _roomRepository.DeleteAsync(room.Result!.RoomId);
+        await _roomRepository.DeleteAsync(room.RoomId);
     }
     public IQueryable<Room> GetAllAsync()
     {
         return _roomRepository.GetAllAsync();
     }
 
-    public async Task<Room?> GetById(int roomId)
+    public async Task<Room?> GetById(Guid roomId)
     {
         var room = await _roomRepository.GetByIdAsync(roomId);
         if (room != null)
@@ -56,14 +56,14 @@ public class RoomService : IRoomService
         return null;
     }
 
-    public Task<Room> GetRoomDetailsByIdAsync(int roomId)
+    public async Task<Room> GetRoomDetailsByIdAsync(Guid roomId)
     {
-        var room = _roomRepository.GetByIdAsync(roomId);
+        var room = await _roomRepository.GetByIdAsync(roomId);
         if (room == null)
         {
             throw new KeyNotFoundException("Room not found");
         }
-        return room!; 
+        return room!;
     }
 
     public IEnumerable<Room> SearchRoomsAsync(SearchRoomRequest request)
@@ -99,13 +99,13 @@ public class RoomService : IRoomService
             query = query.Where(r => r.PricePerNight <= request.MaxPricePerNight.Value);
         }
 
-        if (query.Count() >= request.NumberOfRooms)
+        if (query.Count() < request.NumberOfRooms)
         {
-            return query;
+            return new List<Room>();
         }
-        return new List<Room>();
+        return query.ToList();
     }
-    async Task<bool> IRoomService.UpdateRoomAsync(UpdateRoomRequest request)
+    public async Task<bool> UpdateRoomAsync(UpdateRoomRequest request)
     {
         var room = await _roomRepository.GetByIdAsync(request.RoomId);
         if (room == null)

@@ -7,12 +7,12 @@ namespace Application.Abstraction
     {
         Task CreateHotelAsync(CreateHotelRequest request);
         Task<bool> UpdateHotelAsync(UpdateHotelRequest updateRequest);
-        Task DeleteHotelAsync(int hotelId);
-        Task<Hotel?> GetHotelDetailsByIdAsync(int hotelId);
+        Task DeleteHotelAsync(Guid hotelId);
+        Task<Hotel?> GetHotelDetailsByIdAsync(Guid hotelId);
         Task<IEnumerable<Hotel>> GetHotelsByCityAsync(string city);
         Task<IEnumerable<Hotel>> GetAllAsync();
-        Task<Hotel?> GetById(int hotelId);
-        Task<IEnumerable<Room>?> GetRoomsForHotelId(int hotelId);
+        Task<Hotel?> GetById(Guid hotelId);
+        Task<IEnumerable<Room>?> GetRoomsForHotelId(Guid hotelId);
         Task<IEnumerable<string>> GetCities();
     }
 }
