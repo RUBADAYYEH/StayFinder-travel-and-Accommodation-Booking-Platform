@@ -1,5 +1,4 @@
-![alt text](![image](https://github.com/user-attachments/assets/a58d3132-a5aa-4174-8964-30a8c2684a7e)
-)![Screenshot 2024-09-29 151423](https://github.com/user-attachments/assets/3fb32cdc-d5ef-46f1-ac96-6004b073f88a)
+![Screenshot 2024-09-29 151423](https://github.com/user-attachments/assets/3fb32cdc-d5ef-46f1-ac96-6004b073f88a)
 
 a hands-on project that is  responsible for designing and implementing the APIs for an advanced online hotel booking system, there are various components in the platform,
 including the Login Page, Home Page, Search Results, Hotel Details, Secure Checkout and Admin Management.
